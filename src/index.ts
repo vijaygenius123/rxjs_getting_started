@@ -1,30 +1,35 @@
-import {fromEvent} from "rxjs";
-import {map, filter, delay} from "rxjs/operators";
+import {fromEvent, Observable} from "rxjs";
+import {map, filter, delay, buffer} from "rxjs/operators";
 
-let circle: HTMLElement = document.getElementById('circle');
+let output: HTMLElement = document.getElementById('output')
+let btn: HTMLElement = document.getElementById('btn');
 
-let source: any;
-source = fromEvent(document, 'mousemove')
-    .pipe(
-        map((e: MouseEvent) => {
-            return {
-                x: e.clientX,
-                y: e.clientY
-            }
-        }),
-        filter((value: any)=> {
-            return value.x < 700
-        }),
-        delay(300)
-    )
+let click: Observable<any>;
+click = fromEvent(btn, 'click');
 
-function onNext(value: any){
-    console.log(value);
-    circle.style.left = value.x + 'px';
-    circle.style.top = value.y + 'px';
+function load(url: string) {
+
+    let xhr = new XMLHttpRequest();
+
+    xhr.addEventListener("load", () => {
+        let movies = JSON.parse(xhr.responseText);
+
+        movies.forEach(m=>{
+            let div = document.createElement('div');
+            div.innerText = m.title;
+            output.appendChild(div);
+        })
+    })
+
+    xhr.open("GET", url);
+
+    xhr.send();
+    
 }
 
-source.subscribe(onNext,
-        e => console.log(`Error ${e}`),
-        console.log('Complete')
-);
+click.subscribe(
+    e => load("movies.json")
+)
+
+
+
