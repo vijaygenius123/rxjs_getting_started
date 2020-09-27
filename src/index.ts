@@ -1,6 +1,7 @@
 import {fromEvent} from "rxjs";
 import {map} from "rxjs/operators";
 
+let circle: HTMLElement = document.getElementById('circle');
 
 let source: any;
 source = fromEvent(document, 'mousemove')
@@ -13,5 +14,13 @@ source = fromEvent(document, 'mousemove')
         })
     )
 
+function onNext(value: any){
+    console.log(value);
+    circle.style.left = value.x + 'px';
+    circle.style.top = value.y + 'px';
+}
 
-source.subscribe(value => console.log(value));
+source.subscribe(onNext,
+        e => console.log(`Error ${e}`),
+        console.log('Complete')
+);
