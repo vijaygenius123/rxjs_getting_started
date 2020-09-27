@@ -1,5 +1,5 @@
 import {fromEvent} from "rxjs";
-import {map} from "rxjs/operators";
+import {map, filter, delay} from "rxjs/operators";
 
 let circle: HTMLElement = document.getElementById('circle');
 
@@ -11,7 +11,11 @@ source = fromEvent(document, 'mousemove')
                 x: e.clientX,
                 y: e.clientY
             }
-        })
+        }),
+        filter((value: any)=> {
+            return value.x < 700
+        }),
+        delay(300)
     )
 
 function onNext(value: any){
