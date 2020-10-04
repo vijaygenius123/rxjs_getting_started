@@ -1,5 +1,5 @@
 import {fromEvent, Observable} from "rxjs";
-import {map} from "rxjs/operators";
+import {flatMap} from "rxjs/operators";
 
 let output: HTMLElement = document.getElementById('output')
 let btn: HTMLElement = document.getElementById('btn');
@@ -25,7 +25,7 @@ function load(url: string) {
     })
 }
 
-/*
+
 function renderMovies(movies){
     movies.forEach(m=>{
         let div = document.createElement('div');
@@ -33,7 +33,7 @@ function renderMovies(movies){
         output.appendChild(div);
     })
 }
-*/
+
 
 /*
 click.subscribe(
@@ -44,7 +44,11 @@ click.subscribe(
 */
 
 click.pipe(
-    map(() => load("./movies.json"))
-).subscribe(output => console.log(output))
+    flatMap(() => load("./movies.json"))
+).subscribe(
+    renderMovies,
+    error => console.log(`Error : ${error}`),
+    ()=> console.log('Complete')
+);
 
 
